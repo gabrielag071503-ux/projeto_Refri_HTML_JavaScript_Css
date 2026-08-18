@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dev Club Refri: O refrigerante artesanal com gosto de fruta de verdade. Peça agora!">
+    <link rel="stylesheet" href="./style.css">
+
+    <link rel="icon" href="./img/favicon.ico" sizes="any">
+    <link rel="icon" href="./img/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="./img/icon-192.png">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Dev Club Refri">
+    <meta property="og:description" content="O refrigerante artesanal com gosto de fruta de verdade. Peça agora pelo WhatsApp!">
+    <meta property="og:image" content="https://devclubrefri.com.br/img/og-image.png">
+    <meta property="og:url" content="https://devclubrefri.com.br">
+    <meta property="og:locale" content="pt_BR">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dev Club Refri">
+    <meta name="twitter:description" content="O refrigerante artesanal com gosto de fruta de verdade. Peça agora pelo WhatsApp!">
+    <meta name="twitter:image" content="https://devclubrefri.com.br/img/og-image.png">
+
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#EA3D41">
+
+    <title>Dev Club Refri</title>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-content">
+            <a href="#topo" class="logo">Dev Club <span>Refri</span></a>
+
+            <nav class="nav">
+                <a href="#topo">Início</a>
+                <a href="#sabores">Sabores</a>
+                <a href="#sobre">Sobre</a>
+                <a href="#contato">Contato</a>
+            </nav>
+
+            <div class="header-actions">
+                <button class="icon-toggle" id="darkModeToggle" aria-label="Alternar tema escuro">🌙</button>
+                <button class="icon-toggle" id="favToggle" aria-label="Abrir favoritos">
+                    🤍 <span class="fav-count" id="favCount">0</span>
+                </button>
+                <button class="icon-toggle" id="historicoToggle" aria-label="Abrir histórico de pedidos">📋</button>
+                <button class="cart-toggle" id="cartToggle" aria-label="Abrir carrinho">
+                    🛒 <span class="cart-count" id="cartCount">0</span>
+                </button>
+            </div>
+
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">☰</button>
+        </div>
+    </header>
+
+    <div class="cart-overlay" id="cartOverlay"></div>
+
+    <aside class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h2>Seu carrinho</h2>
+            <button class="cart-close" id="cartClose" aria-label="Fechar carrinho">✕</button>
+        </div>
+
+        <div class="cart-items" id="cartItems">
+            <p class="cart-empty" id="cartEmpty">Seu carrinho está vazio.</p>
+        </div>
+
+        <div class="cart-footer">
+            <p id="cartFreteMsg" class="cart-frete-msg">Adicione itens para calcular o frete.</p>
+
+            <div class="cart-combo-msg" id="cartComboMsg" style="display: none;"></div>
+
+            <div class="cart-cupom">
+                <input type="text" id="cupomInput" placeholder="Cupom de desconto">
+                <button id="cupomBtn">Aplicar</button>
+            </div>
+            <p class="cupom-msg" id="cupomMsg"></p>
+
+            <div class="cart-subtotal cart-subtotal-linha">
+                <span>Subtotal</span>
+                <span id="cartSubtotal">R$ 0,00</span>
+            </div>
+            <div class="cart-subtotal cart-subtotal-linha cart-desconto-linha" id="linhaComboDesconto" style="display: none;">
+                <span>Combo Leve 6 Pague 5</span>
+                <span id="cartComboDesconto">- R$ 0,00</span>
+            </div>
+            <div class="cart-subtotal cart-subtotal-linha cart-desconto-linha" id="linhaCupomDesconto" style="display: none;">
+                <span>Cupom <span id="cartCupomCodigo"></span></span>
+                <span id="cartCupomDesconto">- R$ 0,00</span>
+            </div>
+            <div class="cart-subtotal cart-total-linha">
+                <span>Total</span>
+                <span id="cartTotal">R$ 0,00</span>
+            </div>
+
+            <button class="btn-checkout" id="btnCheckout">Finalizar pedido</button>
+        </div>
+    </aside>
+
+    <div class="cart-overlay" id="favoritosOverlay"></div>
+
+    <aside class="cart-drawer" id="favoritosDrawer">
+        <div class="cart-header">
+            <h2>Seus favoritos</h2>
+            <button class="cart-close" id="favoritosClose" aria-label="Fechar favoritos">✕</button>
+        </div>
+
+        <div class="cart-items" id="favoritosItems">
+            <p class="cart-empty" id="favoritosEmpty">Você ainda não favoritou nenhum sabor.</p>
+        </div>
+    </aside>
+
+    <div class="cart-overlay" id="historicoOverlay"></div>
+
+    <aside class="cart-drawer" id="historicoDrawer">
+        <div class="cart-header">
+            <h2>Histórico de pedidos</h2>
+            <button class="cart-close" id="historicoClose" aria-label="Fechar histórico">✕</button>
+        </div>
+
+        <div class="cart-items" id="historicoItems">
+            <p class="cart-empty" id="historicoEmpty">Você ainda não fez nenhum pedido.</p>
+        </div>
+
+        <div class="cart-footer" id="historicoFooter" style="display: none;">
+            <button class="btn-limpar-historico" id="btnLimparHistorico">Limpar histórico</button>
+        </div>
+    </aside>
+
+    <div class="checkout-overlay" id="checkoutOverlay"></div>
+
+    <div class="checkout-modal" id="checkoutModal">
+        <div class="checkout-header">
+            <h2>Finalizar pedido</h2>
+            <button class="checkout-close" id="checkoutClose" aria-label="Fechar">✕</button>
+        </div>
+
+        <form id="checkoutForm" class="checkout-body">
+            <div class="checkout-resumo" id="checkoutResumo"></div>
+
+            <h3 class="checkout-subtitle">Seus dados</h3>
+
+            <div class="form-row">
+                <label for="ckNome">Nome completo</label>
+                <input type="text" id="ckNome" required>
+            </div>
+
+            <div class="form-row">
+                <label for="ckEmail">E-mail</label>
+                <input type="email" id="ckEmail" required>
+            </div>
+
+            <div class="form-row">
+                <label for="ckTelefone">Telefone / WhatsApp</label>
+                <input type="tel" id="ckTelefone" required>
+            </div>
+
+            <h3 class="checkout-subtitle">Endereço de entrega</h3>
+
+            <div class="form-row-group">
+                <div class="form-row">
+                    <label for="ckCep">CEP</label>
+                    <input type="text" id="ckCep" required>
+                </div>
+                <div class="form-row">
+                    <label for="ckNumero">Número</label>
+                    <input type="text" id="ckNumero" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label for="ckEndereco">Rua</label>
+                <input type="text" id="ckEndereco" required>
+            </div>
+
+            <div class="form-row-group">
+                <div class="form-row">
+                    <label for="ckBairro">Bairro</label>
+                    <input type="text" id="ckBairro" required>
+                </div>
+                <div class="form-row">
+                    <label for="ckCidade">Cidade</label>
+                    <input type="text" id="ckCidade" required>
+                </div>
+            </div>
+
+            <p class="checkout-erro" id="checkoutErro"></p>
+
+            <button type="submit" class="btn-checkout">Enviar pedido pelo WhatsApp</button>
+        </form>
+    </div>
+
+    <div class="product-overlay" id="productOverlay"></div>
+
+    <div class="product-modal" id="productModal">
+        <button class="product-close" id="productClose" aria-label="Fechar">✕</button>
+
+        <div class="product-modal-content">
+            <div class="product-modal-img" id="productModalImg" style="--background: #EA3D41;">
+                <img src="" alt="" id="productModalImage">
+                <span class="zoom-hint" id="zoomHint">🔍 Toque para ampliar</span>
+            </div>
+
+            <div class="product-modal-info">
+                <h2 id="productModalTitle">Morango</h2>
+                <p class="product-modal-desc" id="productModalDesc"></p>
+
+                <div class="product-modal-block">
+                    <h4>Ingredientes</h4>
+                    <p id="productModalIngredientes"></p>
+                </div>
+
+                <div class="product-modal-block">
+                    <h4>Tamanho</h4>
+                    <div class="size-options" id="sizeOptions">
+                        <button class="size-btn active" data-size="350ml" data-extra="0">350ml</button>
+                        <button class="size-btn" data-size="500ml" data-extra="1.50">500ml (+R$ 1,50)</button>
+                    </div>
+                </div>
+
+                <div class="product-modal-block">
+                    <h4>Quantidade</h4>
+                    <div class="qty-selector">
+                        <button id="qtyMenos" aria-label="Diminuir quantidade">-</button>
+                        <span id="qtyValor">1</span>
+                        <button id="qtyMais" aria-label="Aumentar quantidade">+</button>
+                    </div>
+                </div>
+
+                <p class="modal-estoque-aviso" id="modalEstoqueAviso"></p>
+
+                <div class="product-modal-footer">
+                    <p class="product-modal-price" id="productModalPrice">R$ 6,90</p>
+                    <button class="btn-add" id="productModalAdd">Adicionar ao carrinho</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main id="topo" tabindex="0" role="region" aria-label="Carrossel de sabores — use as setas do teclado para navegar">
+        <div class="item active"
+             style="--background: #EA3D41;"
+             data-id="morango"
+             data-nome="Morango"
+             data-preco="6.90"
+             data-imagem="./img/Morango-refrigerante.png"
+             data-descricao="Refrescância intensa com o doce marcante do morango maduro."
+             data-ingredientes="Água gaseificada, extrato natural de morango, açúcar de cana, ácido cítrico.">
+            <div class="title">Morango</div>
+            <img src="./img/Morango-refrigerante-foregroundBlur.png" class="fruit" alt="Respingo de morango" loading="eager">
+            <img src="./img/Morango-refrigerante.png" class="refri" alt="Lata de refrigerante sabor morango" loading="eager">
+            <div class="item-info">
+                <p class="price">R$ 6,90</p>
+                <div class="item-buttons">
+                    <button class="btn-details">Ver detalhes</button>
+                    <button class="btn-add">Adicionar ao carrinho</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="item"
+             style="--background: #2D5643;"
+             data-id="abacate"
+             data-nome="Abacate"
+             data-preco="6.90"
+             data-imagem="./img/Abacate-refrigerante.png"
+             data-descricao="Sabor cremoso e suave, uma releitura surpreendente do abacate em lata."
+             data-ingredientes="Água gaseificada, extrato natural de abacate, açúcar de cana, estabilizante natural.">
+            <div class="title">Abacate</div>
+            <img src="./img/Abacate-refrigerante-foregroundBlur.png" class="fruit" alt="Respingo de abacate" loading="lazy">
+            <img src="./img/Abacate-refrigerante.png" class="refri" alt="Lata de refrigerante sabor abacate" loading="lazy">
+            <div class="item-info">
+                <p class="price">R$ 6,90</p>
+                <div class="item-buttons">
+                    <button class="btn-details">Ver detalhes</button>
+                    <button class="btn-add">Adicionar ao carrinho</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="item"
+             style="--background: #E7A043;"
+             data-id="laranja"
+             data-nome="Laranja"
+             data-preco="6.90"
+             data-imagem="./img/Laranja-refrigerante.png"
+             data-descricao="Cítrico, vibrante e leve — a laranja no seu ponto mais refrescante."
+             data-ingredientes="Água gaseificada, suco natural de laranja, açúcar de cana, ácido cítrico.">
+            <div class="title">Laranja</div>
+            <img src="./img/Laranja-refrigerante-foregroundBlur.png" class="fruit" alt="Respingo de laranja" loading="lazy">
+            <img src="./img/Laranja-refrigerante.png" class="refri" alt="Lata de refrigerante sabor laranja" loading="lazy">
+            <div class="item-info">
+                <p class="price">R$ 6,90</p>
+                <div class="item-buttons">
+                    <button class="btn-details">Ver detalhes</button>
+                    <button class="btn-add">Adicionar ao carrinho</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow">
+            <button id="prev" aria-label="Sabor anterior">&lt;</button>
+            <button id="next" aria-label="Próximo sabor">&gt;</button>
+        </div>
+
+        <div class="dots" id="dots"></div>
+    </main>
+
+    <section id="sabores" class="sabores-grid">
+        <div class="container">
+            <h2 class="section-title reveal"><span>console.log(</span>"Nossos Sabores"<span>);</span></h2>
+            <p class="section-subtitle reveal">Sua dose de dopamina sem bugs.</p>
+
+            <div class="sabores-busca">
+                <input type="text" id="buscaSabor" placeholder="🔍 Buscar sabor..." aria-label="Buscar sabor">
+            </div>
+
+            <div class="grid-container">
+                <div class="sabor-card reveal" 
+                     data-id="morango" data-nome="Morango" data-preco="6.90" data-estoque="8"
+                     data-imagem="./img/Morango-refrigerante.png" 
+                     data-descricao="Refrescância intensa com o doce marcante do morango maduro." 
+                     data-ingredientes="Água gaseificada, extrato natural de morango, açúcar de cana, ácido cítrico."
+                     style="--background: #EA3D41;">
+                    <div class="sabor-img-bg">
+                        <img src="./img/Morango-refrigerante.png" alt="Lata de Morango" loading="lazy">
+                        <span class="badge-estoque"></span>
+                        <button class="favorito-btn" aria-label="Favoritar">🤍</button>
+                    </div>
+                    <h3>Morango</h3>
+                    <p class="sabor-preco">R$ 6,90</p>
+                    <div class="sabor-actions">
+                        <button class="btn-add-grid">Adicionar <span class="code-tag">&lt;/&gt;</span></button>
+                        <button class="btn-details-grid">Ver Detalhes</button>
+                    </div>
+                </div>
+
+                <div class="sabor-card reveal" 
+                     data-id="abacate" data-nome="Abacate" data-preco="6.90" data-estoque="3"
+                     data-imagem="./img/Abacate-refrigerante.png" 
+                     data-descricao="Sabor cremoso e suave, uma releitura surpreendente do abacate em lata." 
+                     data-ingredientes="Água gaseificada, extrato natural de abacate, açúcar de cana, estabilizante natural."
+                     style="--background: #2D5643;">
+                    <div class="sabor-img-bg">
+                        <img src="./img/Abacate-refrigerante.png" alt="Lata de Abacate" loading="lazy">
+                        <span class="badge-estoque"></span>
+                        <button class="favorito-btn" aria-label="Favoritar">🤍</button>
+                    </div>
+                    <h3>Abacate</h3>
+                    <p class="sabor-preco">R$ 6,90</p>
+                    <div class="sabor-actions">
+                        <button class="btn-add-grid">Adicionar <span class="code-tag">&lt;/&gt;</span></button>
+                        <button class="btn-details-grid">Ver Detalhes</button>
+                    </div>
+                </div>
+
+                <div class="sabor-card reveal" 
+                     data-id="laranja" data-nome="Laranja" data-preco="6.90" data-estoque="20"
+                     data-imagem="./img/Laranja-refrigerante.png" 
+                     data-descricao="Cítrico, vibrante e leve — a laranja no seu ponto mais refrescante." 
+                     data-ingredientes="Água gaseificada, suco natural de laranja, açúcar de cana, ácido cítrico."
+                     style="--background: #E7A043;">
+                    <div class="sabor-img-bg">
+                        <img src="./img/Laranja-refrigerante.png" alt="Lata de Laranja" loading="lazy">
+                        <span class="badge-estoque"></span>
+                        <button class="favorito-btn" aria-label="Favoritar">🤍</button>
+                    </div>
+                    <h3>Laranja</h3>
+                    <p class="sabor-preco">R$ 6,90</p>
+                    <div class="sabor-actions">
+                        <button class="btn-add-grid">Adicionar <span class="code-tag">&lt;/&gt;</span></button>
+                        <button class="btn-details-grid">Ver Detalhes</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <p class="sabores-sem-resultado" id="semResultado">Nenhum sabor encontrado com esse nome 🥲</p>
+        </div>
+    </section>
+
+    <section class="reviews">
+        <div class="container">
+            <h2 class="section-title reveal">Deploy com Sucesso ⭐</h2>
+            <div class="reviews-container">
+                <div class="review-card reveal">
+                    <p class="stars">⭐⭐⭐⭐⭐</p>
+                    <p class="review-text">"O refrigerante de Abacate me surpreendeu demais! Super refrescante e nada enjoativo. O código fonte perfeito!"</p>
+                    <p class="review-author">— Lucas S., Front-end Dev</p>
+                </div>
+                <div class="review-card reveal">
+                    <p class="stars">⭐⭐⭐⭐⭐</p>
+                    <p class="review-text">"Pedi para a equipe toda durante uma sprint. A entrega foi super rápida (ping baixíssimo) e salvou nossa tarde de sexta!"</p>
+                    <p class="review-author">— Mariana C., Tech Lead</p>
+                </div>
+                <div class="review-card reveal">
+                    <p class="stars">⭐⭐⭐⭐⭐</p>
+                    <p class="review-text">"Sabor real de fruta! Morango virou minha dependência obrigatória no package.json da semana."</p>
+                    <p class="review-author">— Tiago R., Fullstack</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq">
+        <div class="container">
+            <h2 class="section-title reveal">FAQ <span>{ ... }</span></h2>
+            <div class="accordion-container">
+                <div class="accordion-item reveal">
+                    <button class="accordion-header">O refrigerante tem açúcar refinado? <span class="icon">+</span></button>
+                    <div class="accordion-body">
+                        <p>Negativo! Usamos apenas açúcar de cana orgânico e extratos naturais das frutas. Sem aditivos artificiais no nosso banco de dados.</p>
+                    </div>
+                </div>
+                <div class="accordion-item reveal">
+                    <button class="accordion-header">Como funcionam as entregas? <span class="icon">+</span></button>
+                    <div class="accordion-body">
+                        <p>Entregamos via motoboy num raio de 15km da nossa base. O tempo de resposta (ping) médio é de 40 minutos do pedido até a sua porta, sempre gelado!</p>
+                    </div>
+                </div>
+                <div class="accordion-item reveal">
+                    <button class="accordion-header">Aceitam Vale Refeição (VR/VA)? <span class="icon">+</span></button>
+                    <div class="accordion-body">
+                        <p>Sim! O pagamento pode ser feito no ato da entrega via maquininha para cartões de crédito, débito, VR, VA e também via Pix (API instantânea!).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sobre" class="sobre">
+        <div class="sobre-content">
+            <h2 class="reveal">Sobre a Dev Club Refri</h2>
+            <p class="reveal">
+                Nascemos da vontade de criar um refrigerante diferente: sabores de fruta de verdade,
+                sem exagero de açúcar e com aquela pegada artesanal. Cada lata é pensada pra
+                refrescar sem pesar — do primeiro gole até o último.
+            </p>
+
+            <div class="sobre-cards">
+                <div class="sobre-card reveal">
+                    <h3>🍓 Sabor natural</h3>
+                    <p>Feito com extrato real de fruta, sem sabor artificial forçado.</p>
+                </div>
+                <div class="sobre-card reveal">
+                    <h3>♻️ Lata reciclável</h3>
+                    <p>Embalagem 100% reciclável, porque o planeta também merece um brinde.</p>
+                </div>
+                <div class="sobre-card reveal">
+                    <h3>🚚 Entrega rápida</h3>
+                    <p>Do pedido até a sua porta, sem demora e sempre geladinho.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contato" class="footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3>Dev Club Refri</h3>
+                <p>O refrigerante que tem gosto de fruta de verdade.</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contato</h4>
+                <p>contato@devclubrefri.com.br</p>
+                <p>(71) 90000-0000</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Redes sociais</h4>
+                <div class="social-links">
+                    <a href="#" aria-label="Instagram">Instagram</a>
+                    <a href="#" aria-label="TikTok">TikTok</a>
+                    <a href="#" aria-label="WhatsApp">WhatsApp</a>
+                </div>
+            </div>
+        </div>
+
+        <p class="footer-bottom">© 2026 Dev Club Refri. Todos os direitos reservados.</p>
+    </footer>
+
+    <a href="#" id="whatsappFlutuante" class="whatsapp-flutuante" target="_blank" rel="noopener" aria-label="Falar com a gente no WhatsApp">
+        <span class="whatsapp-flutuante-icone">💬</span>
+    </a>
+
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <script src="./scripts.js"></script>
+</body>
+</html>
