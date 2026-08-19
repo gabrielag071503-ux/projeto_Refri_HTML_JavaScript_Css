@@ -1,144 +1,4 @@
-let list = document.querySelectorAll('.item')
-
-function voarParaCarrinho(imgSrc, elementoOrigem) {
-    let origemRect = elementoOrigem.getBoundingClientRect()
-    let cartIcon = document.getElementById('cartToggle')
-    let destinoRect = cartIcon.getBoundingClientRect()
-
-    let origemX = origemRect.left + origemRect.width / 2 - 24
-    let origemY = origemRect.top + origemRect.height / 2 - 24
-    let destinoX = destinoRect.left + destinoRect.width / 2 - 24
-    let destinoY = destinoRect.top + destinoRect.height / 2 - 24
-
-    let dx = destinoX - origemX
-    let dy = destinoY - origemY
-
-    let clone = document.createElement('img')
-    clone.src = imgSrc
-    clone.className = 'voando-carrinho'
-    clone.style.left = origemX + 'px'
-    clone.style.top = origemY + 'px'
-    clone.style.setProperty('--dx', dx + 'px')
-    clone.style.setProperty('--dy', dy + 'px')
-    clone.style.setProperty('--dx-arco', (dx * 0.55) + 'px')
-    clone.style.setProperty('--dy-arco', (dy * 0.25 - 120) + 'px')
-    document.body.appendChild(clone)
-
-    clone.addEventListener('animationend', () => {
-        clone.remove()
-        let cartCountEl = document.getElementById('cartCount')
-        cartCountEl.classList.add('pop')
-        setTimeout(() => cartCountEl.classList.remove('pop'), 300)
-    })
-}
-
-function explodirCoracoes(botao) {
-    let rect = botao.getBoundingClientRect()
-    let centroX = rect.left + rect.width / 2
-    let centroY = rect.top + rect.height / 2
-
-    for (let i = 0; i < 6; i++) {
-        let particula = document.createElement('span')
-        particula.className = 'particula-coracao'
-        particula.textContent = '❤️'
-
-        let angulo = (i / 6) * 360 + Math.random() * 30
-        let distancia = 26 + Math.random() * 28
-        let dx = Math.cos(angulo * Math.PI / 180) * distancia
-        let dy = Math.sin(angulo * Math.PI / 180) * distancia
-
-        particula.style.left = centroX + 'px'
-        particula.style.top = centroY + 'px'
-        particula.style.setProperty('--dx', dx + 'px')
-        particula.style.setProperty('--dy', dy + 'px')
-
-        document.body.appendChild(particula)
-        particula.addEventListener('animationend', () => particula.remove())
-    }
-}
-
-function dispararConfete() {
-    let cores = ['#EA3D41', '#E7A043', '#2D5643', '#ffffff', '#F2A900']
-    let container = document.createElement('div')
-    container.className = 'confete-container'
-    document.body.appendChild(container)
-
-    for (let i = 0; i < 70; i++) {
-        let pedaco = document.createElement('span')
-        pedaco.className = 'confete-pedaco'
-        pedaco.style.left = (Math.random() * 100) + 'vw'
-        pedaco.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)]
-        pedaco.style.animationDelay = (Math.random() * 0.35) + 's'
-        pedaco.style.animationDuration = (1.8 + Math.random() * 1.4) + 's'
-        pedaco.style.setProperty('--deriva', (Math.random() * 200 - 100) + 'px')
-        pedaco.style.setProperty('--giro', (Math.random() * 720 - 360) + 'deg')
-
-        if (Math.random() > 0.5) pedaco.style.borderRadius = '50%'
-
-        container.appendChild(pedaco)
-    }
-
-    setTimeout(() => container.remove(), 3500)
-}
-
-function destacarLinha(elemento) {
-    if (!elemento) return
-    elemento.classList.remove('linha-destaque')
-    void elemento.offsetWidth
-    elemento.classList.add('linha-destaque')
-}
-
-let bolhasContainer = document.getElementById('bolhas')
-let preferReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-if (bolhasContainer && !preferReducedMotion) {
-    let QUANTIDADE_BOLHAS = 22
-
-    for (let i = 0; i < QUANTIDADE_BOLHAS; i++) {
-        let bolha = document.createElement('span')
-        bolha.className = 'bolha'
-
-        let tamanho = 4 + Math.random() * 12
-        bolha.style.width = tamanho + 'px'
-        bolha.style.height = tamanho + 'px'
-        bolha.style.left = (Math.random() * 100) + '%'
-        bolha.style.animationDuration = (6 + Math.random() * 8) + 's'
-        bolha.style.animationDelay = (Math.random() * 10) + 's'
-        bolha.style.opacity = 0.15 + Math.random() * 0.3
-
-        bolhasContainer.appendChild(bolha)
-    }
-}
-
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./service-worker.js')
-            .catch((err) => console.error('Falha ao registrar service worker:', err))
-    })
-}
-
-let next = document.getElementById('next')
-let prev = document.getElementById('prev')
-let dotsContainer = document.getElementById('dots')
-let menuToggle = document.getElementById('menuToggle')
-let nav = document.querySelector('.nav')
-
-let count = list.length
-let active = 0
-
-
-list.forEach((item, index) => {
-    let dot = document.createElement('button')
-    dot.classList.add('dot')
-    if (index === active) dot.classList.add('active')
-    dot.setAttribute('aria-label', 'Ir para o sabor ' + (index + 1))
-    dot.onclick = () => goToSlide(index)
-    dotsContainer.appendChild(dot)
-})
-
-let dots = document.querySelectorAll('.dot')
-
-function updateDots() {
+) {
     dots.forEach(dot => dot.classList.remove('active'))
     dots[active].classList.add('active')
 }
@@ -161,7 +21,7 @@ prev.onclick = () => {
     goToSlide(novo)
 }
 
-
+// Navegação por teclado (setas ← →) — ignora quando o usuário está digitando em um campo
 document.addEventListener('keydown', (e) => {
     if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return
 
@@ -178,13 +38,13 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') prev.click()
 })
 
-
+// ===== Autoplay (troca sozinho, pausa no hover/toque) =====
 let mainEl = document.querySelector('main')
-const AUTOPLAY_INTERVAL = 5000 
+const AUTOPLAY_INTERVAL = 5000 // 5 segundos
 let autoplayTimer = null
 
 function iniciarAutoplay() {
-    pararAutoplay() 
+    pararAutoplay() // evita criar mais de um timer ao mesmo tempo
     autoplayTimer = setInterval(() => {
         next.click()
     }, AUTOPLAY_INTERVAL)
@@ -197,21 +57,21 @@ function pararAutoplay() {
     }
 }
 
-
+// Pausa quando o mouse está em cima (desktop)
 mainEl.addEventListener('mouseenter', pararAutoplay)
 mainEl.addEventListener('mouseleave', iniciarAutoplay)
 
-
+// Reinicia a contagem sempre que o usuário navega manualmente
 next.addEventListener('click', iniciarAutoplay)
 prev.addEventListener('click', iniciarAutoplay)
 dotsContainer.addEventListener('click', iniciarAutoplay)
 
 iniciarAutoplay()
 
-
+// ===== Swipe (arrastar com o dedo) no mobile =====
 let touchStartX = 0
 let touchEndX = 0
-const SWIPE_MIN_DISTANCE = 50 
+const SWIPE_MIN_DISTANCE = 50 // px mínimos para considerar um swipe
 
 mainEl.addEventListener('touchstart', (e) => {
     touchStartX = e.changedTouches[0].screenX
@@ -227,12 +87,12 @@ mainEl.addEventListener('touchend', (e) => {
 function processarSwipe() {
     let distancia = touchEndX - touchStartX
 
-    if (Math.abs(distancia) < SWIPE_MIN_DISTANCE) return 
+    if (Math.abs(distancia) < SWIPE_MIN_DISTANCE) return // toque pequeno demais, ignora
 
     if (distancia < 0) {
-        next.click() 
+        next.click() // arrastou pra esquerda -> próximo
     } else {
-        prev.click() 
+        prev.click() // arrastou pra direita -> anterior
     }
 }
 
@@ -242,7 +102,7 @@ if (menuToggle) {
     }
 }
 
-
+// ===================== CARRINHO =====================
 let cartToggle = document.getElementById('cartToggle')
 let cartClose = document.getElementById('cartClose')
 let cartOverlay = document.getElementById('cartOverlay')
@@ -253,12 +113,12 @@ let cartCountEl = document.getElementById('cartCount')
 let cartSubtotalEl = document.getElementById('cartSubtotal')
 let btnCheckout = document.getElementById('btnCheckout')
 
-
+// Carrega o carrinho salvo no localStorage (ou começa vazio)
 let cart = JSON.parse(localStorage.getItem('devclub-cart')) || []
 
-
+// ===================== TOAST (NOTIFICAÇÕES) =====================
 let toastContainer = document.getElementById('toastContainer')
-const TOAST_DURACAO = 3000 
+const TOAST_DURACAO = 3000 // 3 segundos
 
 function mostrarToast(mensagem, icone = '✅') {
     let toast = document.createElement('div')
@@ -290,10 +150,10 @@ function formatarPreco(valor) {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
-
+// ===================== ESTOQUE (FAKE) =====================
 const LIMITE_ESTOQUE_BAIXO = 5
 
-
+// Lê o estoque base de cada sabor a partir do data-estoque dos cards da grid
 let estoqueBase = {}
 document.querySelectorAll('.sabor-card[data-estoque]').forEach(card => {
     estoqueBase[card.dataset.id] = parseInt(card.dataset.estoque, 10)
@@ -305,16 +165,16 @@ function qtdNoCarrinhoPorId(id) {
         .reduce((soma, item) => soma + item.qtd, 0)
 }
 
-
+// Estoque "restante" = estoque base menos o que já está no carrinho
 function estoqueDisponivel(id) {
     let base = estoqueBase[id]
-    if (base === undefined) return Infinity 
+    if (base === undefined) return Infinity // sabor sem controle de estoque configurado
 
     let disponivel = base - qtdNoCarrinhoPorId(id)
     return disponivel < 0 ? 0 : disponivel
 }
 
-
+// Atualiza badges e desabilita botões de "Adicionar" nos cards da grid e do carrossel
 function atualizarBadgesEstoque() {
     document.querySelectorAll('[data-id]').forEach(elemento => {
         let id = elemento.dataset.id
@@ -361,7 +221,7 @@ function fecharCarrinho() {
     cartOverlay.classList.remove('open')
 }
 
-
+// id único do item no carrinho considera o tamanho (350ml e 500ml são "produtos" diferentes)
 function gerarChaveCarrinho(id, tamanho) {
     return id + '-' + tamanho
 }
@@ -403,7 +263,7 @@ function removerItem(chave) {
     renderizarCarrinho()
 }
 
-
+// ===================== CUPOM DE DESCONTO =====================
 const CUPONS_VALIDOS = {
     'DEVCLUB10': 0.10,
     'BEMVINDO15': 0.15
@@ -426,7 +286,8 @@ function removerCupom() {
     mostrarToast('Cupom removido.', 'ℹ️')
 }
 
-const COMBO_QTD_MINIMA = 6
+// ===================== COMBO / KIT PROMOCIONAL =====================
+const COMBO_QTD_MINIMA = 6 // a cada 6 latas do mesmo sabor, 1 sai de graça
 
 function calcularDescontoCombo() {
     let idsNoCarrinho = [...new Set(cart.map(item => item.id))]
@@ -446,6 +307,7 @@ function calcularDescontoCombo() {
     return desconto
 }
 
+// Calcula subtotal, descontos e total final do carrinho — usado no drawer, no checkout e na mensagem do WhatsApp
 function calcularTotaisCarrinho() {
     let subtotal = cart.reduce((soma, item) => soma + item.qtd * item.preco, 0)
     let descontoCombo = calcularDescontoCombo()
@@ -497,30 +359,26 @@ function renderizarCarrinho() {
     let totais = calcularTotaisCarrinho()
     cartSubtotalEl.textContent = formatarPreco(totais.subtotal)
 
-    
+    // ===== Combo Leve 6 Pague 5 =====
     let linhaComboDesconto = document.getElementById('linhaComboDesconto')
     let cartComboDescontoEl = document.getElementById('cartComboDesconto')
     let cartComboMsgEl = document.getElementById('cartComboMsg')
-    let comboEstavaEscondido = linhaComboDesconto.style.display === 'none' || linhaComboDesconto.style.display === ''
 
     if (totais.descontoCombo > 0) {
         linhaComboDesconto.style.display = 'flex'
         cartComboDescontoEl.textContent = '- ' + formatarPreco(totais.descontoCombo)
         cartComboMsgEl.style.display = 'block'
         cartComboMsgEl.textContent = '🎁 Combo aplicado: a cada 6 latas do mesmo sabor, 1 sai de graça!'
-
-        if (comboEstavaEscondido) destacarLinha(linhaComboDesconto)
     } else {
         linhaComboDesconto.style.display = 'none'
         cartComboMsgEl.style.display = 'none'
     }
 
-    
+    // ===== Cupom de desconto =====
     let linhaCupomDesconto = document.getElementById('linhaCupomDesconto')
     let cartCupomDescontoEl = document.getElementById('cartCupomDesconto')
     let cartCupomCodigoEl = document.getElementById('cartCupomCodigo')
     let cupomMsgEl = document.getElementById('cupomMsg')
-    let cupomEstavaEscondido = linhaCupomDesconto.style.display === 'none' || linhaCupomDesconto.style.display === ''
 
     if (cupomAplicado) {
         linhaCupomDesconto.style.display = 'flex'
@@ -532,8 +390,6 @@ function renderizarCarrinho() {
 
         let btnRemoverCupom = document.getElementById('btnRemoverCupom')
         if (btnRemoverCupom) btnRemoverCupom.onclick = removerCupom
-
-        if (cupomEstavaEscondido) destacarLinha(linhaCupomDesconto)
     } else {
         linhaCupomDesconto.style.display = 'none'
     }
@@ -544,32 +400,29 @@ function renderizarCarrinho() {
     let faltante = META_FRETE_GRATIS - totais.total;
     let freteTexto = document.getElementById('cartFreteMsg');
     
-    if (freteTexto) { 
+    if (freteTexto) { // Verifica se a div existe para evitar erros
         if (totais.total === 0) {
             freteTexto.textContent = "Adicione itens para calcular o frete.";
-            freteTexto.style.color = "#666"; 
+            freteTexto.style.color = "#666"; // Cinza
         } else if (faltante > 0) {
             freteTexto.textContent = `Faltam R$ ${faltante.toFixed(2).replace('.', ',')} para FRETE GRÁTIS!`;
-            freteTexto.style.color = "#EA3D41"; 
+            freteTexto.style.color = "#EA3D41"; // Vermelho da sua marca
         } else {
             freteTexto.textContent = "🎉 Você ganhou FRETE GRÁTIS!";
-            freteTexto.style.color = "#2D5643"; 
+            freteTexto.style.color = "#2D5643"; // Verde do sabor Abacate
         }
     }
 
     atualizarBadgesEstoque()
 }
 
-
+// Botão "Adicionar ao carrinho" direto no carrossel (sem abrir o modal, tamanho padrão 350ml)
 document.querySelectorAll('.item .btn-add').forEach(botao => {
     botao.onclick = () => {
         let itemDiv = botao.closest('.item')
         let id = itemDiv.dataset.id
         let nome = itemDiv.dataset.nome
         let preco = parseFloat(itemDiv.dataset.preco)
-        let imagem = itemDiv.querySelector('img.refri')
-
-        if (imagem) voarParaCarrinho(imagem.src, imagem)
 
         adicionarAoCarrinho(id, nome, preco, '350ml', 1)
     }
@@ -579,7 +432,7 @@ cartToggle.onclick = abrirCarrinho
 cartClose.onclick = fecharCarrinho
 cartOverlay.onclick = fecharCarrinho
 
-
+// ===== Aplicar cupom =====
 let cupomInput = document.getElementById('cupomInput')
 let cupomBtn = document.getElementById('cupomBtn')
 
@@ -603,7 +456,7 @@ if (cupomBtn) {
     }
 }
 
-
+// ===================== CHECKOUT =====================
 let checkoutOverlay = document.getElementById('checkoutOverlay')
 let checkoutModal = document.getElementById('checkoutModal')
 let checkoutClose = document.getElementById('checkoutClose')
@@ -698,9 +551,12 @@ checkoutForm.addEventListener('submit', (e) => {
     iniciarPagamento(dadosPedido)
 })
 
-
+// ===== ENVIO DO PEDIDO VIA WHATSAPP =====
+// Troque pelo número real da loja, com DDI 55 + DDD + número, sem espaços/símbolos.
+// Exemplo: (71) 90000-0000 vira "5571900000000"
 const NUMERO_WHATSAPP_LOJA = "5571900000000"
 
+// ===================== BOTÃO FLUTUANTE DO WHATSAPP =====================
 let whatsappFlutuante = document.getElementById('whatsappFlutuante')
 
 if (whatsappFlutuante) {
@@ -752,11 +608,10 @@ function iniciarPagamento(dadosPedido) {
     let mensagem = montarMensagemPedido(dadosPedido)
     let urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP_LOJA}?text=${encodeURIComponent(mensagem)}`
 
-    
+    // Abre o WhatsApp (app no celular ou WhatsApp Web no computador) já com a mensagem pronta
     window.open(urlWhatsApp, '_blank')
 
     salvarPedidoNoHistorico(dadosPedido)
-    dispararConfete()
 
     cart = []
     cupomAplicado = null
@@ -767,13 +622,13 @@ function iniciarPagamento(dadosPedido) {
     checkoutForm.reset()
 }
 
+// ===== PRÓXIMA ETAPA (FUTURO) =====
+// Quando quiser aceitar pagamento online de verdade (cartão/Pix automático),
+// troque o conteúdo de iniciarPagamento() por uma chamada a uma função
+// serverless (Netlify/Vercel) que gera a cobrança no Mercado Pago/Stripe
+// e redirecione o cliente pro link de pagamento retornado.
 
-
-
-
-
-
-
+// ===================== MODAL DE PRODUTO =====================
 let productOverlay = document.getElementById('productOverlay')
 let productModal = document.getElementById('productModal')
 let productClose = document.getElementById('productClose')
@@ -790,7 +645,7 @@ let qtyMais = document.getElementById('qtyMais')
 let qtyValor = document.getElementById('qtyValor')
 let modalEstoqueAviso = document.getElementById('modalEstoqueAviso')
 
-let produtoAtual = null 
+let produtoAtual = null // guarda os dados do item aberto no modal
 let tamanhoAtual = { nome: '350ml', extra: 0 }
 let qtdAtual = 1
 
@@ -805,7 +660,7 @@ function abrirModalProduto(itemDiv) {
         background: itemDiv.style.getPropertyValue('--background')
     }
 
-    
+    // reseta seleção de tamanho e quantidade toda vez que abre
     tamanhoAtual = { nome: '350ml', extra: 0 }
     qtdAtual = 1
     qtyValor.textContent = qtdAtual
@@ -821,7 +676,7 @@ function abrirModalProduto(itemDiv) {
     productModalDesc.textContent = produtoAtual.descricao
     productModalIngredientes.textContent = produtoAtual.ingredientes
 
-    
+    // Reseta o zoom sempre que abre um produto novo
     productModalImage.classList.remove('zoom-ativo')
     if (zoomHint) zoomHint.style.opacity = ''
 
@@ -832,7 +687,7 @@ function abrirModalProduto(itemDiv) {
     productModal.classList.add('open')
 }
 
-
+// Clique/toque na imagem alterna o zoom (essencial no mobile, onde não existe hover)
 let zoomHint = document.getElementById('zoomHint')
 
 if (productModalImage) {
@@ -916,10 +771,6 @@ productModalAdd.onclick = () => {
         return
     }
 
-    if (productModalImage && productModalImage.src) {
-        voarParaCarrinho(productModalImage.src, productModalImage)
-    }
-
     let precoComTamanho = produtoAtual.preco + tamanhoAtual.extra
     adicionarAoCarrinho(produtoAtual.id, produtoAtual.nome, precoComTamanho, tamanhoAtual.nome, qtdAtual)
     fecharModalProduto()
@@ -942,7 +793,7 @@ document.querySelectorAll('.btn-details').forEach(botao => {
 productClose.onclick = fecharModalProduto
 productOverlay.onclick = fecharModalProduto
 
-
+// Renderiza o carrinho assim que a página carrega
 renderizarCarrinho()
 
 let ckCep = document.getElementById('ckCep')
@@ -959,7 +810,7 @@ if (ckCep) {
                     document.getElementById('ckEndereco').value = data.logradouro
                     document.getElementById('ckBairro').value = data.bairro
                     document.getElementById('ckCidade').value = data.localidade
-                    document.getElementById('ckNumero').focus() 
+                    document.getElementById('ckNumero').focus() // Pula pro número!
                 }
             } catch (err) {
                 console.error('Erro ao buscar CEP:', err)
@@ -968,25 +819,22 @@ if (ckCep) {
     })
 }
 
+// ===================== SEÇÃO DE SABORES (GRID) =====================
 
-
-
+// Botão Adicionar direto da Grid
 document.querySelectorAll('.btn-add-grid').forEach(botao => {
     botao.onclick = () => {
         let cardDiv = botao.closest('.sabor-card')
         let id = cardDiv.dataset.id
         let nome = cardDiv.dataset.nome
         let preco = parseFloat(cardDiv.dataset.preco)
-        let imagem = cardDiv.querySelector('.sabor-img-bg img')
 
-        if (imagem) voarParaCarrinho(imagem.src, imagem)
-
-        
+        // Adiciona 1 lata de 350ml por padrão
         adicionarAoCarrinho(id, nome, preco, '350ml', 1)
     }
 })
 
-
+// Botão Ver Detalhes da Grid (Reaproveita a função do modal)
 document.querySelectorAll('.btn-details-grid').forEach(botao => {
     botao.onclick = () => {
         let cardDiv = botao.closest('.sabor-card')
@@ -1001,7 +849,7 @@ document.querySelectorAll('.btn-details-grid').forEach(botao => {
     }
 })
 
-
+// ===== Busca / filtro de sabores =====
 let buscaInput = document.getElementById('buscaSabor')
 let saborCards = document.querySelectorAll('.sabor-card')
 let semResultadoEl = document.getElementById('semResultado')
@@ -1022,16 +870,16 @@ if (buscaInput) {
     })
 }
 
-
-
+// ===== Avaliação por sabor (estrelas) =====
+// Valores iniciais "fake" — simulam avaliações que a loja já teria recebido
 let avaliacoesSeed = {
-    morango: { soma: 45, qtd: 10 },  
-    abacate: { soma: 34, qtd: 9 },   
-    laranja: { soma: 47, qtd: 10 }   
+    morango: { soma: 45, qtd: 10 },  // média 4.5
+    abacate: { soma: 34, qtd: 9 },   // média 3.8
+    laranja: { soma: 47, qtd: 10 }   // média 4.7
 }
 
-
-
+// Mescla com o que já estiver salvo no navegador, sem perder o seed de sabores novos
+// que ainda não tenham avaliação salva (ex: se você adicionar mais sabores depois)
 let avaliacoesSalvas = JSON.parse(localStorage.getItem('devclub-avaliacoes')) || {}
 let avaliacoes = { ...avaliacoesSeed, ...avaliacoesSalvas }
 let minhasAvaliacoes = JSON.parse(localStorage.getItem('devclub-minha-avaliacao')) || {}
@@ -1085,7 +933,7 @@ function avaliarSabor(id, valor) {
     let votoAnterior = minhasAvaliacoes[id]
 
     if (votoAnterior) {
-        
+        // já tinha avaliado esse sabor: só ajusta a diferença, sem contar 2x
         avaliacoes[id].soma += (valor - votoAnterior)
     } else {
         avaliacoes[id].soma += valor
@@ -1104,16 +952,19 @@ function atualizarBlocoAvaliacao(id) {
     })
 }
 
-
+// Insere o bloco de avaliação em cada card, entre o preço e os botões de ação
 saborCards.forEach(card => {
     let id = card.dataset.id
     let acoes = card.querySelector('.sabor-actions')
     acoes.insertAdjacentElement('beforebegin', criarBlocoAvaliacao(id))
 })
 
-
+// ===================== REVEAL (INTERSECTION OBSERVER) =====================
 let revealEls = document.querySelectorAll('.reveal')
 
+// Aplica um pequeno atraso escalonado pros elementos que ficam lado a lado
+// (cards de sabor, review, faq, sobre), pra não animar tudo junto de uma vez.
+// Agrupa por elemento pai, assim cards do mesmo grid escalonam entre si.
 let indicePorPai = new Map()
 
 revealEls.forEach(el => {
@@ -1127,22 +978,22 @@ let revealObserver = new IntersectionObserver((entradas) => {
     entradas.forEach(entrada => {
         if (entrada.isIntersecting) {
             entrada.target.classList.add('reveal-ativo')
-            revealObserver.unobserve(entrada.target)
+            revealObserver.unobserve(entrada.target) // anima só uma vez
         }
     })
 }, {
-    threshold: 0.15,
-    rootMargin: '0px 0px -50px 0px'
+    threshold: 0.15,       // dispara quando 15% do elemento aparece na tela
+    rootMargin: '0px 0px -50px 0px' // antecipa um pouco antes de chegar no fim da viewport
 })
 
 revealEls.forEach(el => revealObserver.observe(el))
 
-
+// ===================== FAQ (ACCORDION) =====================
 let accordions = document.querySelectorAll('.accordion-header')
 
 accordions.forEach(accordion => {
     accordion.onclick = function() {
-        
+        // Remove a classe active de todos para abrir só um por vez (opcional)
         accordions.forEach(acc => {
             if (acc !== this) {
                 acc.classList.remove('active')
@@ -1150,7 +1001,7 @@ accordions.forEach(accordion => {
             }
         })
 
-        
+        // Alterna o estado do accordion clicado
         this.classList.toggle('active')
         let panel = this.nextElementSibling
         
@@ -1162,6 +1013,7 @@ accordions.forEach(accordion => {
     }
 })
 
+// ===================== DARK MODE =====================
 let darkModeToggle = document.getElementById('darkModeToggle')
 
 function aplicarPreferenciaDarkMode() {
@@ -1182,6 +1034,7 @@ if (darkModeToggle) {
     aplicarPreferenciaDarkMode()
 }
 
+// ===================== FAVORITOS =====================
 let favoritos = JSON.parse(localStorage.getItem('devclub-favoritos')) || []
 
 let favToggle = document.getElementById('favToggle')
@@ -1284,20 +1137,18 @@ if (favToggle) {
     favoritosOverlay.onclick = favoritosClose.onclick
 }
 
+// Liga o clique de cada coração de favorito
 document.querySelectorAll('.favorito-btn').forEach(botao => {
     botao.onclick = (e) => {
         e.stopPropagation()
         let card = botao.closest('.sabor-card')
-        let vaiFavoritar = !favoritos.includes(card.dataset.id)
-
         alternarFavorito(card.dataset.id)
-
-        if (vaiFavoritar) explodirCoracoes(botao)
     }
 })
 
 atualizarBotoesFavorito()
 
+// ===================== HISTÓRICO DE PEDIDOS =====================
 let historico = JSON.parse(localStorage.getItem('devclub-historico')) || []
 
 let historicoToggle = document.getElementById('historicoToggle')
@@ -1322,6 +1173,7 @@ function salvarPedidoNoHistorico(dadosPedido) {
         total: dadosPedido.total
     })
 
+    // Mantém só os últimos 20 pedidos pra não crescer indefinidamente
     historico = historico.slice(0, 20)
     salvarHistorico()
 }
@@ -1390,3 +1242,100 @@ if (btnLimparHistorico) {
         mostrarToast('Histórico de pedidos limpo.', '🗑️')
     }
 }
+
+(function () {
+    'use strict';
+
+    const CONFIG = {
+        WHATSAPP_NUMERO: "5511999999999",
+        LIMITE_ESTOQUE_BAIXO: 5,
+        CUPONS_VALIDOS: {
+            "DEV10": 0.10,
+            "REFRI20": 0.20
+        }
+    };
+
+    let carrinho = [];
+    let ultimoElementoFocado = null;
+
+    function escaparHTML(str) {
+        if (typeof str !== 'string') return str;
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function criarBolhas() {
+        const container = document.createElement('div');
+        container.className = 'bubbles-container';
+        document.body.appendChild(container);
+
+        for (let i = 0; i < 20; i++) {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            const size = Math.random() * 12 + 6 + 'px';
+
+            bubble.style.width = size;
+            bubble.style.height = size;
+            bubble.style.left = Math.random() * 100 + 'vw';
+            bubble.style.setProperty('--duration', Math.random() * 6 + 4 + 's');
+            bubble.style.animationDelay = Math.random() * 5 + 's';
+
+            container.appendChild(bubble);
+        }
+    }
+
+    function prenderFocoModal(modal) {
+        const elementosFocaveis = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (elementosFocaveis.length === 0) return;
+
+        const primeiro = elementosFocaveis[0];
+        const ultimo = elementosFocaveis[elementosFocaveis.length - 1];
+
+        primeiro.focus();
+
+        modal.addEventListener('keydown', function (e) {
+            if (e.key === 'Tab') {
+                if (e.shiftKey && document.activeElement === primeiro) {
+                    e.preventDefault();
+                    ultimo.focus();
+                } else if (!e.shiftKey && document.activeElement === ultimo) {
+                    e.preventDefault();
+                    primeiro.focus();
+                }
+            }
+            if (e.key === 'Escape') {
+                fecharModal(modal);
+            }
+        });
+    }
+
+    function abrirModal(modal) {
+        if (!modal) return;
+        ultimoElementoFocado = document.activeElement;
+        modal.classList.add('active');
+        prenderFocoModal(modal);
+    }
+
+    function fecharModal(modal) {
+        if (!modal) return;
+        modal.classList.remove('active');
+        if (ultimoElementoFocado) {
+            ultimoElementoFocado.focus();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        criarBolhas();
+
+        document.querySelectorAll('.close-modal-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const modal = e.target.closest('.modal');
+                fecharModal(modal);
+            });
+        });
+    });
+})();
