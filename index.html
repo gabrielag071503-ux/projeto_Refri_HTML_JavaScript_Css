@@ -6,10 +6,13 @@
     <meta name="description" content="Dev Club Refri: O refrigerante artesanal com gosto de fruta de verdade. Peça agora!">
     <link rel="stylesheet" href="./style.css">
 
+    <!-- ===== FAVICON ===== -->
     <link rel="icon" href="./img/favicon.ico" sizes="any">
     <link rel="icon" href="./img/favicon-32.png" type="image/png" sizes="32x32">
     <link rel="apple-touch-icon" href="./img/icon-192.png">
 
+    <!-- ===== OPEN GRAPH (preview ao compartilhar em WhatsApp, Instagram, etc.) ===== -->
+    <!-- Troque "https://devclubrefri.com.br" pela URL real quando publicar o site -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Dev Club Refri">
     <meta property="og:description" content="O refrigerante artesanal com gosto de fruta de verdade. Peça agora pelo WhatsApp!">
@@ -22,6 +25,7 @@
     <meta name="twitter:description" content="O refrigerante artesanal com gosto de fruta de verdade. Peça agora pelo WhatsApp!">
     <meta name="twitter:image" content="https://devclubrefri.com.br/img/og-image.png">
 
+    <!-- ===== PWA ===== -->
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#EA3D41">
 
@@ -29,6 +33,7 @@
 </head>
 <body>
 
+    <!-- ===== HEADER ===== -->
     <header class="header">
         <div class="header-content">
             <a href="#topo" class="logo">Dev Club <span>Refri</span></a>
@@ -55,6 +60,7 @@
         </div>
     </header>
 
+    <!-- ===== CARRINHO (DRAWER) ===== -->
     <div class="cart-overlay" id="cartOverlay"></div>
 
     <aside class="cart-drawer" id="cartDrawer">
@@ -99,6 +105,7 @@
         </div>
     </aside>
 
+    <!-- ===== FAVORITOS (DRAWER) ===== -->
     <div class="cart-overlay" id="favoritosOverlay"></div>
 
     <aside class="cart-drawer" id="favoritosDrawer">
@@ -112,6 +119,7 @@
         </div>
     </aside>
 
+    <!-- ===== HISTÓRICO DE PEDIDOS (DRAWER) ===== -->
     <div class="cart-overlay" id="historicoOverlay"></div>
 
     <aside class="cart-drawer" id="historicoDrawer">
@@ -129,6 +137,7 @@
         </div>
     </aside>
 
+    <!-- ===== CHECKOUT (MODAL) ===== -->
     <div class="checkout-overlay" id="checkoutOverlay"></div>
 
     <div class="checkout-modal" id="checkoutModal">
@@ -192,6 +201,7 @@
         </form>
     </div>
 
+    <!-- ===== MODAL DE PRODUTO ===== -->
     <div class="product-overlay" id="productOverlay"></div>
 
     <div class="product-modal" id="productModal">
@@ -239,8 +249,8 @@
         </div>
     </div>
 
+    <!-- ===== CARROSSEL (HERO) ===== -->
     <main id="topo" tabindex="0" role="region" aria-label="Carrossel de sabores — use as setas do teclado para navegar">
-        <div class="bolhas" id="bolhas" aria-hidden="true"></div>
         <div class="item active"
              style="--background: #EA3D41;"
              data-id="morango"
@@ -309,6 +319,7 @@
         <div class="dots" id="dots"></div>
     </main>
 
+    <!-- ===== TODOS OS SABORES (GRID) ===== -->
     <section id="sabores" class="sabores-grid">
         <div class="container">
             <h2 class="section-title reveal"><span>console.log(</span>"Nossos Sabores"<span>);</span></h2>
@@ -319,11 +330,11 @@
             </div>
 
             <div class="grid-container">
-
-                <div class="sabor-card reveal"
+                <!-- Card 1 -->
+                <div class="sabor-card reveal" 
                      data-id="morango" data-nome="Morango" data-preco="6.90" data-estoque="8"
-                     data-imagem="./img/Morango-refrigerante.png"
-                     data-descricao="Refrescância intensa com o doce marcante do morango maduro."
+                     data-imagem="./img/Morango-refrigerante.png" 
+                     data-descricao="Refrescância intensa com o doce marcante do morango maduro." 
                      data-ingredientes="Água gaseificada, extrato natural de morango, açúcar de cana, ácido cítrico."
                      style="--background: #EA3D41;">
                     <div class="sabor-img-bg">
@@ -339,10 +350,11 @@
                     </div>
                 </div>
 
-                <div class="sabor-card reveal"
+                <!-- Card 2 -->
+                <div class="sabor-card reveal" 
                      data-id="abacate" data-nome="Abacate" data-preco="6.90" data-estoque="3"
-                     data-imagem="./img/Abacate-refrigerante.png"
-                     data-descricao="Sabor cremoso e suave, uma releitura surpreendente do abacate em lata."
+                     data-imagem="./img/Abacate-refrigerante.png" 
+                     data-descricao="Sabor cremoso e suave, uma releitura surpreendente do abacate em lata." 
                      data-ingredientes="Água gaseificada, extrato natural de abacate, açúcar de cana, estabilizante natural."
                      style="--background: #2D5643;">
                     <div class="sabor-img-bg">
@@ -358,10 +370,11 @@
                     </div>
                 </div>
 
-                <div class="sabor-card reveal"
+                <!-- Card 3 -->
+                <div class="sabor-card reveal" 
                      data-id="laranja" data-nome="Laranja" data-preco="6.90" data-estoque="20"
-                     data-imagem="./img/Laranja-refrigerante.png"
-                     data-descricao="Cítrico, vibrante e leve — a laranja no seu ponto mais refrescante."
+                     data-imagem="./img/Laranja-refrigerante.png" 
+                     data-descricao="Cítrico, vibrante e leve — a laranja no seu ponto mais refrescante." 
                      data-ingredientes="Água gaseificada, suco natural de laranja, açúcar de cana, ácido cítrico."
                      style="--background: #E7A043;">
                     <div class="sabor-img-bg">
@@ -383,6 +396,7 @@
         </div>
     </section>
 
+    <!-- ===== PROVA SOCIAL (REVIEWS) ===== -->
     <section class="reviews">
         <div class="container">
             <h2 class="section-title reveal">Deploy com Sucesso ⭐</h2>
@@ -406,6 +420,7 @@
         </div>
     </section>
 
+    <!-- ===== FAQ (PERGUNTAS FREQUENTES) ===== -->
     <section class="faq">
         <div class="container">
             <h2 class="section-title reveal">FAQ <span>{ ... }</span></h2>
@@ -432,6 +447,7 @@
         </div>
     </section>
 
+    <!-- ===== SOBRE ===== -->
     <section id="sobre" class="sobre">
         <div class="sobre-content">
             <h2 class="reveal">Sobre a Dev Club Refri</h2>
@@ -458,6 +474,7 @@
         </div>
     </section>
 
+    <!-- ===== RODAPÉ / CONTATO ===== -->
     <footer id="contato" class="footer">
         <div class="footer-content">
             <div class="footer-col">
@@ -484,10 +501,12 @@
         <p class="footer-bottom">© 2026 Dev Club Refri. Todos os direitos reservados.</p>
     </footer>
 
+    <!-- ===== BOTÃO FLUTUANTE DO WHATSAPP ===== -->
     <a href="#" id="whatsappFlutuante" class="whatsapp-flutuante" target="_blank" rel="noopener" aria-label="Falar com a gente no WhatsApp">
         <span class="whatsapp-flutuante-icone">💬</span>
     </a>
 
+    <!-- ===== TOAST (NOTIFICAÇÕES) ===== -->
     <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
     <script src="./scripts.js"></script>
