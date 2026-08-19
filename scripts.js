@@ -1,6 +1,115 @@
 let list = document.querySelectorAll('.item')
 
-// ===================== PWA — REGISTRO DO SERVICE WORKER =====================
+function voarParaCarrinho(imgSrc, elementoOrigem) {
+    let origemRect = elementoOrigem.getBoundingClientRect()
+    let cartIcon = document.getElementById('cartToggle')
+    let destinoRect = cartIcon.getBoundingClientRect()
+
+    let origemX = origemRect.left + origemRect.width / 2 - 24
+    let origemY = origemRect.top + origemRect.height / 2 - 24
+    let destinoX = destinoRect.left + destinoRect.width / 2 - 24
+    let destinoY = destinoRect.top + destinoRect.height / 2 - 24
+
+    let dx = destinoX - origemX
+    let dy = destinoY - origemY
+
+    let clone = document.createElement('img')
+    clone.src = imgSrc
+    clone.className = 'voando-carrinho'
+    clone.style.left = origemX + 'px'
+    clone.style.top = origemY + 'px'
+    clone.style.setProperty('--dx', dx + 'px')
+    clone.style.setProperty('--dy', dy + 'px')
+    clone.style.setProperty('--dx-arco', (dx * 0.55) + 'px')
+    clone.style.setProperty('--dy-arco', (dy * 0.25 - 120) + 'px')
+    document.body.appendChild(clone)
+
+    clone.addEventListener('animationend', () => {
+        clone.remove()
+        let cartCountEl = document.getElementById('cartCount')
+        cartCountEl.classList.add('pop')
+        setTimeout(() => cartCountEl.classList.remove('pop'), 300)
+    })
+}
+
+function explodirCoracoes(botao) {
+    let rect = botao.getBoundingClientRect()
+    let centroX = rect.left + rect.width / 2
+    let centroY = rect.top + rect.height / 2
+
+    for (let i = 0; i < 6; i++) {
+        let particula = document.createElement('span')
+        particula.className = 'particula-coracao'
+        particula.textContent = '❤️'
+
+        let angulo = (i / 6) * 360 + Math.random() * 30
+        let distancia = 26 + Math.random() * 28
+        let dx = Math.cos(angulo * Math.PI / 180) * distancia
+        let dy = Math.sin(angulo * Math.PI / 180) * distancia
+
+        particula.style.left = centroX + 'px'
+        particula.style.top = centroY + 'px'
+        particula.style.setProperty('--dx', dx + 'px')
+        particula.style.setProperty('--dy', dy + 'px')
+
+        document.body.appendChild(particula)
+        particula.addEventListener('animationend', () => particula.remove())
+    }
+}
+
+function dispararConfete() {
+    let cores = ['#EA3D41', '#E7A043', '#2D5643', '#ffffff', '#F2A900']
+    let container = document.createElement('div')
+    container.className = 'confete-container'
+    document.body.appendChild(container)
+
+    for (let i = 0; i < 70; i++) {
+        let pedaco = document.createElement('span')
+        pedaco.className = 'confete-pedaco'
+        pedaco.style.left = (Math.random() * 100) + 'vw'
+        pedaco.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)]
+        pedaco.style.animationDelay = (Math.random() * 0.35) + 's'
+        pedaco.style.animationDuration = (1.8 + Math.random() * 1.4) + 's'
+        pedaco.style.setProperty('--deriva', (Math.random() * 200 - 100) + 'px')
+        pedaco.style.setProperty('--giro', (Math.random() * 720 - 360) + 'deg')
+
+        if (Math.random() > 0.5) pedaco.style.borderRadius = '50%'
+
+        container.appendChild(pedaco)
+    }
+
+    setTimeout(() => container.remove(), 3500)
+}
+
+function destacarLinha(elemento) {
+    if (!elemento) return
+    elemento.classList.remove('linha-destaque')
+    void elemento.offsetWidth
+    elemento.classList.add('linha-destaque')
+}
+
+let bolhasContainer = document.getElementById('bolhas')
+let preferReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+if (bolhasContainer && !preferReducedMotion) {
+    let QUANTIDADE_BOLHAS = 22
+
+    for (let i = 0; i < QUANTIDADE_BOLHAS; i++) {
+        let bolha = document.createElement('span')
+        bolha.className = 'bolha'
+
+        let tamanho = 4 + Math.random() * 12
+        bolha.style.width = tamanho + 'px'
+        bolha.style.height = tamanho + 'px'
+        bolha.style.left = (Math.random() * 100) + '%'
+        bolha.style.animationDuration = (6 + Math.random() * 8) + 's'
+        bolha.style.animationDelay = (Math.random() * 10) + 's'
+        bolha.style.opacity = 0.15 + Math.random() * 0.3
+
+        bolhasContainer.appendChild(bolha)
+    }
+}
+
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./service-worker.js')
@@ -17,7 +126,7 @@ let nav = document.querySelector('.nav')
 let count = list.length
 let active = 0
 
-// ===================== CARROSSEL =====================
+
 list.forEach((item, index) => {
     let dot = document.createElement('button')
     dot.classList.add('dot')
@@ -52,6 +161,7 @@ prev.onclick = () => {
     goToSlide(novo)
 }
 
+
 document.addEventListener('keydown', (e) => {
     if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return
 
@@ -68,12 +178,13 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') prev.click()
 })
 
+
 let mainEl = document.querySelector('main')
 const AUTOPLAY_INTERVAL = 5000 
 let autoplayTimer = null
 
 function iniciarAutoplay() {
-    pararAutoplay()
+    pararAutoplay() 
     autoplayTimer = setInterval(() => {
         next.click()
     }, AUTOPLAY_INTERVAL)
@@ -86,8 +197,10 @@ function pararAutoplay() {
     }
 }
 
+
 mainEl.addEventListener('mouseenter', pararAutoplay)
 mainEl.addEventListener('mouseleave', iniciarAutoplay)
+
 
 next.addEventListener('click', iniciarAutoplay)
 prev.addEventListener('click', iniciarAutoplay)
@@ -95,9 +208,11 @@ dotsContainer.addEventListener('click', iniciarAutoplay)
 
 iniciarAutoplay()
 
+
 let touchStartX = 0
 let touchEndX = 0
 const SWIPE_MIN_DISTANCE = 50 
+
 mainEl.addEventListener('touchstart', (e) => {
     touchStartX = e.changedTouches[0].screenX
     pararAutoplay()
@@ -113,6 +228,7 @@ function processarSwipe() {
     let distancia = touchEndX - touchStartX
 
     if (Math.abs(distancia) < SWIPE_MIN_DISTANCE) return 
+
     if (distancia < 0) {
         next.click() 
     } else {
@@ -126,7 +242,7 @@ if (menuToggle) {
     }
 }
 
-// ===================== CARRINHO =====================
+
 let cartToggle = document.getElementById('cartToggle')
 let cartClose = document.getElementById('cartClose')
 let cartOverlay = document.getElementById('cartOverlay')
@@ -137,11 +253,12 @@ let cartCountEl = document.getElementById('cartCount')
 let cartSubtotalEl = document.getElementById('cartSubtotal')
 let btnCheckout = document.getElementById('btnCheckout')
 
+
 let cart = JSON.parse(localStorage.getItem('devclub-cart')) || []
 
-// ===================== TOAST (NOTIFICAÇÕES) =====================
+
 let toastContainer = document.getElementById('toastContainer')
-const TOAST_DURACAO = 3000 // 3 segundos
+const TOAST_DURACAO = 3000 
 
 function mostrarToast(mensagem, icone = '✅') {
     let toast = document.createElement('div')
@@ -173,8 +290,9 @@ function formatarPreco(valor) {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
-// ===================== ESTOQUE (FAKE) =====================
+
 const LIMITE_ESTOQUE_BAIXO = 5
+
 
 let estoqueBase = {}
 document.querySelectorAll('.sabor-card[data-estoque]').forEach(card => {
@@ -195,6 +313,7 @@ function estoqueDisponivel(id) {
     let disponivel = base - qtdNoCarrinhoPorId(id)
     return disponivel < 0 ? 0 : disponivel
 }
+
 
 function atualizarBadgesEstoque() {
     document.querySelectorAll('[data-id]').forEach(elemento => {
@@ -242,6 +361,7 @@ function fecharCarrinho() {
     cartOverlay.classList.remove('open')
 }
 
+
 function gerarChaveCarrinho(id, tamanho) {
     return id + '-' + tamanho
 }
@@ -283,7 +403,7 @@ function removerItem(chave) {
     renderizarCarrinho()
 }
 
-// ===================== CUPOM DE DESCONTO =====================
+
 const CUPONS_VALIDOS = {
     'DEVCLUB10': 0.10,
     'BEMVINDO15': 0.15
@@ -306,8 +426,7 @@ function removerCupom() {
     mostrarToast('Cupom removido.', 'ℹ️')
 }
 
-// ===================== COMBO / KIT PROMOCIONAL =====================
-const COMBO_QTD_MINIMA = 6 
+const COMBO_QTD_MINIMA = 6
 
 function calcularDescontoCombo() {
     let idsNoCarrinho = [...new Set(cart.map(item => item.id))]
@@ -327,7 +446,6 @@ function calcularDescontoCombo() {
     return desconto
 }
 
-// Calcula subtotal, descontos e total final do carrinho — usado no drawer, no checkout e na mensagem do WhatsApp
 function calcularTotaisCarrinho() {
     let subtotal = cart.reduce((soma, item) => soma + item.qtd * item.preco, 0)
     let descontoCombo = calcularDescontoCombo()
@@ -379,26 +497,30 @@ function renderizarCarrinho() {
     let totais = calcularTotaisCarrinho()
     cartSubtotalEl.textContent = formatarPreco(totais.subtotal)
 
-    // ===== Combo Leve 6 Pague 5 =====
+    
     let linhaComboDesconto = document.getElementById('linhaComboDesconto')
     let cartComboDescontoEl = document.getElementById('cartComboDesconto')
     let cartComboMsgEl = document.getElementById('cartComboMsg')
+    let comboEstavaEscondido = linhaComboDesconto.style.display === 'none' || linhaComboDesconto.style.display === ''
 
     if (totais.descontoCombo > 0) {
         linhaComboDesconto.style.display = 'flex'
         cartComboDescontoEl.textContent = '- ' + formatarPreco(totais.descontoCombo)
         cartComboMsgEl.style.display = 'block'
         cartComboMsgEl.textContent = '🎁 Combo aplicado: a cada 6 latas do mesmo sabor, 1 sai de graça!'
+
+        if (comboEstavaEscondido) destacarLinha(linhaComboDesconto)
     } else {
         linhaComboDesconto.style.display = 'none'
         cartComboMsgEl.style.display = 'none'
     }
 
-    // ===== Cupom de desconto =====
+    
     let linhaCupomDesconto = document.getElementById('linhaCupomDesconto')
     let cartCupomDescontoEl = document.getElementById('cartCupomDesconto')
     let cartCupomCodigoEl = document.getElementById('cartCupomCodigo')
     let cupomMsgEl = document.getElementById('cupomMsg')
+    let cupomEstavaEscondido = linhaCupomDesconto.style.display === 'none' || linhaCupomDesconto.style.display === ''
 
     if (cupomAplicado) {
         linhaCupomDesconto.style.display = 'flex'
@@ -410,6 +532,8 @@ function renderizarCarrinho() {
 
         let btnRemoverCupom = document.getElementById('btnRemoverCupom')
         if (btnRemoverCupom) btnRemoverCupom.onclick = removerCupom
+
+        if (cupomEstavaEscondido) destacarLinha(linhaCupomDesconto)
     } else {
         linhaCupomDesconto.style.display = 'none'
     }
@@ -436,12 +560,16 @@ function renderizarCarrinho() {
     atualizarBadgesEstoque()
 }
 
+
 document.querySelectorAll('.item .btn-add').forEach(botao => {
     botao.onclick = () => {
         let itemDiv = botao.closest('.item')
         let id = itemDiv.dataset.id
         let nome = itemDiv.dataset.nome
         let preco = parseFloat(itemDiv.dataset.preco)
+        let imagem = itemDiv.querySelector('img.refri')
+
+        if (imagem) voarParaCarrinho(imagem.src, imagem)
 
         adicionarAoCarrinho(id, nome, preco, '350ml', 1)
     }
@@ -451,7 +579,7 @@ cartToggle.onclick = abrirCarrinho
 cartClose.onclick = fecharCarrinho
 cartOverlay.onclick = fecharCarrinho
 
-// ===== Aplicar cupom =====
+
 let cupomInput = document.getElementById('cupomInput')
 let cupomBtn = document.getElementById('cupomBtn')
 
@@ -475,7 +603,7 @@ if (cupomBtn) {
     }
 }
 
-// ===================== CHECKOUT =====================
+
 let checkoutOverlay = document.getElementById('checkoutOverlay')
 let checkoutModal = document.getElementById('checkoutModal')
 let checkoutClose = document.getElementById('checkoutClose')
@@ -570,10 +698,9 @@ checkoutForm.addEventListener('submit', (e) => {
     iniciarPagamento(dadosPedido)
 })
 
-// ===== ENVIO DO PEDIDO VIA WHATSAPP =====
+
 const NUMERO_WHATSAPP_LOJA = "5571900000000"
 
-// ===================== BOTÃO FLUTUANTE DO WHATSAPP =====================
 let whatsappFlutuante = document.getElementById('whatsappFlutuante')
 
 if (whatsappFlutuante) {
@@ -625,9 +752,11 @@ function iniciarPagamento(dadosPedido) {
     let mensagem = montarMensagemPedido(dadosPedido)
     let urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP_LOJA}?text=${encodeURIComponent(mensagem)}`
 
+    
     window.open(urlWhatsApp, '_blank')
 
     salvarPedidoNoHistorico(dadosPedido)
+    dispararConfete()
 
     cart = []
     cupomAplicado = null
@@ -638,7 +767,13 @@ function iniciarPagamento(dadosPedido) {
     checkoutForm.reset()
 }
 
-// ===================== MODAL DE PRODUTO =====================
+
+
+
+
+
+
+
 let productOverlay = document.getElementById('productOverlay')
 let productModal = document.getElementById('productModal')
 let productClose = document.getElementById('productClose')
@@ -655,7 +790,7 @@ let qtyMais = document.getElementById('qtyMais')
 let qtyValor = document.getElementById('qtyValor')
 let modalEstoqueAviso = document.getElementById('modalEstoqueAviso')
 
-let produtoAtual = null
+let produtoAtual = null 
 let tamanhoAtual = { nome: '350ml', extra: 0 }
 let qtdAtual = 1
 
@@ -670,6 +805,7 @@ function abrirModalProduto(itemDiv) {
         background: itemDiv.style.getPropertyValue('--background')
     }
 
+    
     tamanhoAtual = { nome: '350ml', extra: 0 }
     qtdAtual = 1
     qtyValor.textContent = qtdAtual
@@ -685,6 +821,7 @@ function abrirModalProduto(itemDiv) {
     productModalDesc.textContent = produtoAtual.descricao
     productModalIngredientes.textContent = produtoAtual.ingredientes
 
+    
     productModalImage.classList.remove('zoom-ativo')
     if (zoomHint) zoomHint.style.opacity = ''
 
@@ -694,6 +831,7 @@ function abrirModalProduto(itemDiv) {
     productOverlay.classList.add('open')
     productModal.classList.add('open')
 }
+
 
 let zoomHint = document.getElementById('zoomHint')
 
@@ -778,6 +916,10 @@ productModalAdd.onclick = () => {
         return
     }
 
+    if (productModalImage && productModalImage.src) {
+        voarParaCarrinho(productModalImage.src, productModalImage)
+    }
+
     let precoComTamanho = produtoAtual.preco + tamanhoAtual.extra
     adicionarAoCarrinho(produtoAtual.id, produtoAtual.nome, precoComTamanho, tamanhoAtual.nome, qtdAtual)
     fecharModalProduto()
@@ -799,6 +941,7 @@ document.querySelectorAll('.btn-details').forEach(botao => {
 
 productClose.onclick = fecharModalProduto
 productOverlay.onclick = fecharModalProduto
+
 
 renderizarCarrinho()
 
@@ -825,7 +968,8 @@ if (ckCep) {
     })
 }
 
-// ===================== SEÇÃO DE SABORES (GRID) =====================
+
+
 
 document.querySelectorAll('.btn-add-grid').forEach(botao => {
     botao.onclick = () => {
@@ -833,9 +977,15 @@ document.querySelectorAll('.btn-add-grid').forEach(botao => {
         let id = cardDiv.dataset.id
         let nome = cardDiv.dataset.nome
         let preco = parseFloat(cardDiv.dataset.preco)
+        let imagem = cardDiv.querySelector('.sabor-img-bg img')
+
+        if (imagem) voarParaCarrinho(imagem.src, imagem)
+
+        
         adicionarAoCarrinho(id, nome, preco, '350ml', 1)
     }
 })
+
 
 document.querySelectorAll('.btn-details-grid').forEach(botao => {
     botao.onclick = () => {
@@ -851,7 +1001,7 @@ document.querySelectorAll('.btn-details-grid').forEach(botao => {
     }
 })
 
-// ===== Busca / filtro de sabores =====
+
 let buscaInput = document.getElementById('buscaSabor')
 let saborCards = document.querySelectorAll('.sabor-card')
 let semResultadoEl = document.getElementById('semResultado')
@@ -872,12 +1022,15 @@ if (buscaInput) {
     })
 }
 
-// ===== Avaliação por sabor (estrelas) =====
+
+
 let avaliacoesSeed = {
     morango: { soma: 45, qtd: 10 },  
     abacate: { soma: 34, qtd: 9 },   
     laranja: { soma: 47, qtd: 10 }   
 }
+
+
 
 let avaliacoesSalvas = JSON.parse(localStorage.getItem('devclub-avaliacoes')) || {}
 let avaliacoes = { ...avaliacoesSeed, ...avaliacoesSalvas }
@@ -932,6 +1085,7 @@ function avaliarSabor(id, valor) {
     let votoAnterior = minhasAvaliacoes[id]
 
     if (votoAnterior) {
+        
         avaliacoes[id].soma += (valor - votoAnterior)
     } else {
         avaliacoes[id].soma += valor
@@ -950,13 +1104,14 @@ function atualizarBlocoAvaliacao(id) {
     })
 }
 
+
 saborCards.forEach(card => {
     let id = card.dataset.id
     let acoes = card.querySelector('.sabor-actions')
     acoes.insertAdjacentElement('beforebegin', criarBlocoAvaliacao(id))
 })
 
-// ===================== REVEAL (INTERSECTION OBSERVER) =====================
+
 let revealEls = document.querySelectorAll('.reveal')
 
 let indicePorPai = new Map()
@@ -972,17 +1127,17 @@ let revealObserver = new IntersectionObserver((entradas) => {
     entradas.forEach(entrada => {
         if (entrada.isIntersecting) {
             entrada.target.classList.add('reveal-ativo')
-            revealObserver.unobserve(entrada.target) 
+            revealObserver.unobserve(entrada.target)
         }
     })
 }, {
-    threshold: 0.15,       
-    rootMargin: '0px 0px -50px 0px' 
+    threshold: 0.15,
+    rootMargin: '0px 0px -50px 0px'
 })
 
 revealEls.forEach(el => revealObserver.observe(el))
 
-// ===================== FAQ (ACCORDION) =====================
+
 let accordions = document.querySelectorAll('.accordion-header')
 
 accordions.forEach(accordion => {
@@ -1007,7 +1162,6 @@ accordions.forEach(accordion => {
     }
 })
 
-// ===================== DARK MODE =====================
 let darkModeToggle = document.getElementById('darkModeToggle')
 
 function aplicarPreferenciaDarkMode() {
@@ -1028,7 +1182,6 @@ if (darkModeToggle) {
     aplicarPreferenciaDarkMode()
 }
 
-// ===================== FAVORITOS =====================
 let favoritos = JSON.parse(localStorage.getItem('devclub-favoritos')) || []
 
 let favToggle = document.getElementById('favToggle')
@@ -1135,13 +1288,16 @@ document.querySelectorAll('.favorito-btn').forEach(botao => {
     botao.onclick = (e) => {
         e.stopPropagation()
         let card = botao.closest('.sabor-card')
+        let vaiFavoritar = !favoritos.includes(card.dataset.id)
+
         alternarFavorito(card.dataset.id)
+
+        if (vaiFavoritar) explodirCoracoes(botao)
     }
 })
 
 atualizarBotoesFavorito()
 
-// ===================== HISTÓRICO DE PEDIDOS =====================
 let historico = JSON.parse(localStorage.getItem('devclub-historico')) || []
 
 let historicoToggle = document.getElementById('historicoToggle')
@@ -1234,100 +1390,3 @@ if (btnLimparHistorico) {
         mostrarToast('Histórico de pedidos limpo.', '🗑️')
     }
 }
-
-(function () {
-    'use strict';
-
-    const CONFIG = {
-        WHATSAPP_NUMERO: "5511999999999",
-        LIMITE_ESTOQUE_BAIXO: 5,
-        CUPONS_VALIDOS: {
-            "DEV10": 0.10,
-            "REFRI20": 0.20
-        }
-    };
-
-    let carrinho = [];
-    let ultimoElementoFocado = null;
-
-    function escaparHTML(str) {
-        if (typeof str !== 'string') return str;
-        return str
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
-    function criarBolhas() {
-        const container = document.createElement('div');
-        container.className = 'bubbles-container';
-        document.body.appendChild(container);
-
-        for (let i = 0; i < 20; i++) {
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble';
-            const size = Math.random() * 12 + 6 + 'px';
-
-            bubble.style.width = size;
-            bubble.style.height = size;
-            bubble.style.left = Math.random() * 100 + 'vw';
-            bubble.style.setProperty('--duration', Math.random() * 6 + 4 + 's');
-            bubble.style.animationDelay = Math.random() * 5 + 's';
-
-            container.appendChild(bubble);
-        }
-    }
-
-    function prenderFocoModal(modal) {
-        const elementosFocaveis = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-        if (elementosFocaveis.length === 0) return;
-
-        const primeiro = elementosFocaveis[0];
-        const ultimo = elementosFocaveis[elementosFocaveis.length - 1];
-
-        primeiro.focus();
-
-        modal.addEventListener('keydown', function (e) {
-            if (e.key === 'Tab') {
-                if (e.shiftKey && document.activeElement === primeiro) {
-                    e.preventDefault();
-                    ultimo.focus();
-                } else if (!e.shiftKey && document.activeElement === ultimo) {
-                    e.preventDefault();
-                    primeiro.focus();
-                }
-            }
-            if (e.key === 'Escape') {
-                fecharModal(modal);
-            }
-        });
-    }
-
-    function abrirModal(modal) {
-        if (!modal) return;
-        ultimoElementoFocado = document.activeElement;
-        modal.classList.add('active');
-        prenderFocoModal(modal);
-    }
-
-    function fecharModal(modal) {
-        if (!modal) return;
-        modal.classList.remove('active');
-        if (ultimoElementoFocado) {
-            ultimoElementoFocado.focus();
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        criarBolhas();
-
-        document.querySelectorAll('.close-modal-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const modal = e.target.closest('.modal');
-                fecharModal(modal);
-            });
-        });
-    });
-})();
