@@ -1,4 +1,35 @@
-) {
+let list = document.querySelectorAll('.item')
+
+// ===================== PWA — REGISTRO DO SERVICE WORKER =====================
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+            .catch((err) => console.error('Falha ao registrar service worker:', err))
+    })
+}
+
+let next = document.getElementById('next')
+let prev = document.getElementById('prev')
+let dotsContainer = document.getElementById('dots')
+let menuToggle = document.getElementById('menuToggle')
+let nav = document.querySelector('.nav')
+
+let count = list.length
+let active = 0
+
+// ===================== CARROSSEL =====================
+list.forEach((item, index) => {
+    let dot = document.createElement('button')
+    dot.classList.add('dot')
+    if (index === active) dot.classList.add('active')
+    dot.setAttribute('aria-label', 'Ir para o sabor ' + (index + 1))
+    dot.onclick = () => goToSlide(index)
+    dotsContainer.appendChild(dot)
+})
+
+let dots = document.querySelectorAll('.dot')
+
+function updateDots() {
     dots.forEach(dot => dot.classList.remove('active'))
     dots[active].classList.add('active')
 }
