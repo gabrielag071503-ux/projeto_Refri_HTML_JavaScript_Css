@@ -1,6 +1,4 @@
-// ===================== SERVICE WORKER — Dev Club Refri =====================
-// Estratégia: cache-first pros arquivos estáticos do app, com fallback pra rede.
-// Isso permite abrir o site (já visitado antes) mesmo sem internet.
+
 
 const CACHE_NOME = 'devclub-refri-v1'
 
@@ -14,7 +12,7 @@ const ARQUIVOS_PARA_CACHE = [
     './img/icon-512.png'
 ]
 
-// Instala o service worker e guarda os arquivos principais em cache
+
 self.addEventListener('install', (evento) => {
     evento.waitUntil(
         caches.open(CACHE_NOME).then((cache) => {
@@ -24,7 +22,7 @@ self.addEventListener('install', (evento) => {
     self.skipWaiting()
 })
 
-// Remove caches antigos quando uma nova versão do service worker assume
+
 self.addEventListener('activate', (evento) => {
     evento.waitUntil(
         caches.keys().then((nomes) => {
@@ -38,9 +36,9 @@ self.addEventListener('activate', (evento) => {
     self.clients.claim()
 })
 
-// Intercepta requisições: tenta o cache primeiro, senão busca na rede
+
 self.addEventListener('fetch', (evento) => {
-    // Só trata requisições GET (evita interferir em chamadas POST, ex: ViaCEP)
+    
     if (evento.request.method !== 'GET') return
 
     evento.respondWith(
@@ -49,7 +47,7 @@ self.addEventListener('fetch', (evento) => {
 
             return fetch(evento.request)
                 .then((respostaRede) => {
-                    // Guarda no cache uma cópia dos arquivos do próprio site (não de APIs externas)
+                    
                     if (evento.request.url.startsWith(self.location.origin)) {
                         let respostaClone = respostaRede.clone()
                         caches.open(CACHE_NOME).then((cache) => {
@@ -59,7 +57,7 @@ self.addEventListener('fetch', (evento) => {
                     return respostaRede
                 })
                 .catch(() => {
-                    // Sem internet e sem cache: se for navegação de página, cai no index
+                    
                     if (evento.request.mode === 'navigate') {
                         return caches.match('./index.html')
                     }
